@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Challenge Gold",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/waldo1234567/Gold_Level_Project.git"
+  },
+  "author": "Waldo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/waldo1234567/Gold_Level_Project/issues"
+  },
+  "homepage": "https://github.com/waldo1234567/Gold_Level_Project#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "express": "^4.18.2"
+  }
+}
