@@ -4,7 +4,7 @@
   "description": "Challenge Gold",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/waldo1234567/Gold_Level_Project#readme",
   "dependencies": {
     "colors": "^1.4.0",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
     "knex": "^2.5.1",
     "pg": "^8.11.3"
