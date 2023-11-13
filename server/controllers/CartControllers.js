@@ -1,28 +1,59 @@
+const knex = require('knex');
 const db = require('./dbs');
 const updatePrice = require('./updatePrice');
+
+// db.schema.hasColumn('product', 'id').then((exists) => {
+//     console.log('Does "id" column exist in "product" table?', exists);
+// });
+
+// db.schema.hasColumn('cartItems', 'id_cart').then((exists) => {
+//     console.log('Does "id_cart" column exist in "cartItems" table?', exists);
+// });
+
+// db.schema.hasColumn('cartItems', 'id_product').then((exists) => {
+//     console.log('Does "id_product" column exist in "cartItems" table?', exists);
+// });
+
 class CartControllers {
     static async addToCart(req, res) {
-        const { idCart, idProduct, quantity } = req.body
+        const { idProduct, quantity } = req.body
+        console.log(req.body);
+        if (!req.session.user || !req.session.user.id) {
+            return res.redirect('/user/login');
+        }
+        const userId = req.session.user.id;
         try {
-            const existingItem = await db('cartItems').where({ id_cart: idCart, id_product: idProduct }).first();
+            let userCart = await db('cart').where('id_user', userId).first();
+            if (!userCart) {
+                const newCart = await db('cart').insert({
+                    id_user: userId,
+                    total: 0
+                });
+                userCart = { id: newCart[0] };
+            }
+            const existingItem = await db('cartItems').where({ id_cart: userCart.id, id_product: idProduct }).first();
             console.log(existingItem);
-
-            if (existingItem) {
-                await db('cartItems').where({ id_cart: idCart, id_product: idProduct }).increment('quantity', quantity);
+            if (existingItem !== undefined) {
+                await db('cartItems')
+                    .where({ id_cart: userCart.id, id_product: idProduct })
+                    .increment('quantity', quantity);
             } else {
                 await db('cartItems').insert({
-                    id_cart: idCart,
+                    id_cart: userCart.id,
                     id_product: idProduct,
                     quantity
                 });
-                const userCart = await db('cart').where('id', idCart).first();
-                await updatePrice.updateTotalPrice(userCart.id);
+                const insertedItem = await db('cartItems').where('id',userCart.id).first();
+                console.log('Inserted Item:', insertedItem);
             }
-            return res.status(200).json({ message: 'added product to cart!' })
+            await updatePrice.updateTotalPrice(userId);
+            return res.redirect('/products/showAllDataPage');
         } catch (error) {
             console.log(error);
             return res.status(500).json(error);
         }
+
+
     }
 
     static async addNewCart(req, res) {
@@ -120,7 +151,7 @@ class CartControllers {
             }
         } catch (error) {
             console.log(error);
-            return res.status(400).json({message: 'failed >:('});
+            return res.status(400).json({ message: 'failed >:(' });
         }
     }
 
@@ -141,12 +172,30 @@ class CartControllers {
                 await db('cart').where('id', cartId).update('total', totalPrice);
 
                 return res.status(200).json({ message: 'successfully removed item!' });
-            }else{
-                return res.status(400).json({message: 'cart has no items!'});
+            } else {
+                return res.status(400).json({ message: 'cart has no items!' });
             }
         } catch (error) {
             console.log(error);
             return res.status(500).json(error);
+        }
+    }
+
+    static async getCartData(req, res) {
+        const { cartId } = req.body;
+
+        try {
+            const cartItems = await db('cartItems')
+                .where('id_cart', cartId)
+                .select('cartItems.quantity', 'product.id as productId', 'product.product_name', 'product.description', 'product.price')
+                .join('product', 'cartItems.id_product', 'product.id');
+            console.log(cartItems);
+            // res.status(200).send('product', { currentCart: cartItems });
+            return cartItems;
+
+        } catch (error) {
+            console.log(error);
+            throw error;
         }
     }
 }

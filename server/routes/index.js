@@ -12,6 +12,9 @@ routes.use('/merchant', merchantRoutes);
 routes.use('/products', productRoutes);
 routes.use('/cart', cartRoutes);
 routes.use('/checkout',checkoutRoutes);
+routes.get('/home', (req,res)=>{
+    res.render('index')
+})
 
 
 module.exports = routes;

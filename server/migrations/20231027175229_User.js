@@ -12,6 +12,8 @@ exports.up = function(knex) {
         t.string('password').notNullable()
         t.string('address').notNullable()
         t.text('phone_number')
+        t.boolean('hasLogin').defaultTo(false);
+        t.boolean('hasCart').defaultTo(false);
     })
 };
 

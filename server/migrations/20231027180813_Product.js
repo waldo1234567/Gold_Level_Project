@@ -10,6 +10,8 @@ exports.up = function(knex) {
         t.integer('stock').notNullable();
         t.integer('price').notNullable();
         t.integer('id_category').unsigned().references('id').inTable('category').onUpdate('CASCADE').onDelete('CASCADE'); 
+        t.string('image_url');
+        t.string('cloudinary_id');
     });
 }
 
