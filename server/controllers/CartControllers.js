@@ -2,18 +2,6 @@ const knex = require('knex');
 const db = require('./dbs');
 const updatePrice = require('./updatePrice');
 
-// db.schema.hasColumn('product', 'id').then((exists) => {
-//     console.log('Does "id" column exist in "product" table?', exists);
-// });
-
-// db.schema.hasColumn('cartItems', 'id_cart').then((exists) => {
-//     console.log('Does "id_cart" column exist in "cartItems" table?', exists);
-// });
-
-// db.schema.hasColumn('cartItems', 'id_product').then((exists) => {
-//     console.log('Does "id_product" column exist in "cartItems" table?', exists);
-// });
-
 class CartControllers {
     static async addToCart(req, res) {
         const { idProduct, quantity } = req.body
