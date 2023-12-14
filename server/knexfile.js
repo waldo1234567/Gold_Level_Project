@@ -11,7 +11,7 @@ module.exports = {
       host: 'localhost',
       port: 5432,
       user: 'postgres',
-      password: 'Neslite214',
+      password: '**********',
       database: 'gold_level'
     }
   },
